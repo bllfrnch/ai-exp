@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import styles from './BlogCard.module.css';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article class={styles.card}>
+  <h2>
+    <a href={`/blog/${post.slug}/`} class={styles.title}>
+      {post.data.title}
+    </a>
+  </h2>
+  
+  {post.data.description && (
+    <p class={styles.excerpt}>
+      {post.data.description}
+    </p>
+  )}
+  
+  <div class={styles.meta}>
+    <FormattedDate date={post.data.pubDate} />
+    <a href={`/blog/${post.slug}/`} class={styles.readMore}>
+      Read more →
+    </a>
+  </div>
+</article> 
