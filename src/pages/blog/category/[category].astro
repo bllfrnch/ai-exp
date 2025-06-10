@@ -1,0 +1,130 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	const categories = [...new Set(posts.flatMap(post => post.data.categories))];
+	
+	return categories.map(category => ({
+		params: { category },
+		props: { category }
+	}));
+}
+
+const { category } = Astro.props;
+const posts = (await getCollection('blog'))
+	.filter(post => post.data.categories.includes(category))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categoryTitles = {
+	'web-development': 'Web Development',
+	'javascript': 'JavaScript',
+	'css': 'CSS & Styling', 
+	'react': 'React',
+	'astro': 'Astro',
+	'vite': 'Vite',
+	'tutorials': 'Tutorials',
+	'beginners': 'Beginner Guides',
+	'advanced': 'Advanced Topics'
+};
+
+const categoryTitle = categoryTitles[category] || category.charAt(0).toUpperCase() + category.slice(1);
+---
+
+<Layout 
+	title={`${categoryTitle} Posts`}
+	description={`All posts about ${categoryTitle.toLowerCase()}`}
+>
+	<div class="category-page">
+		<header class="category-header">
+			<h1>{categoryTitle}</h1>
+			<p class="category-description">
+				{posts.length} {posts.length === 1 ? 'post' : 'posts'} about {categoryTitle.toLowerCase()}
+			</p>
+		</header>
+		
+		{posts.length > 0 ? (
+			<div class="posts-grid">
+				{posts.map((post) => (
+					<BlogCard post={post} />
+				))}
+			</div>
+		) : (
+			<div class="no-posts">
+				<p>No posts found in this category yet.</p>
+				<a href="/blog">← Back to all posts</a>
+			</div>
+		)}
+	</div>
+</Layout>
+
+<style>
+	.category-page {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+	
+	.category-header {
+		text-align: center;
+		margin-bottom: 4rem;
+	}
+	
+	.category-header h1 {
+		font-size: 3rem;
+		font-weight: 800;
+		margin-bottom: 1rem;
+		color: var(--heading-color);
+	}
+	
+	.category-description {
+		font-size: 1.25rem;
+		color: rgb(var(--gray));
+		font-weight: 500;
+	}
+	
+	.posts-grid {
+		display: grid;
+		gap: 2.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	}
+	
+	.no-posts {
+		text-align: center;
+		padding: 4rem 2rem;
+	}
+	
+	.no-posts p {
+		font-size: 1.25rem;
+		color: rgb(var(--gray));
+		margin-bottom: 2rem;
+	}
+	
+	.no-posts a {
+		color: var(--accent);
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 1.125rem;
+	}
+	
+	.no-posts a:hover {
+		text-decoration: underline;
+	}
+	
+	@media (max-width: 768px) {
+		.category-page {
+			padding: 1rem;
+		}
+		
+		.category-header h1 {
+			font-size: 2.5rem;
+		}
+		
+		.posts-grid {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+	}
+</style> 

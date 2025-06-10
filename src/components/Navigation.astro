@@ -9,14 +9,12 @@ interface Props {
 const { children } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-// Example navigation structure - you can customize this
+// Navigation structure with actual category links
 const navigationItems = [
   {
     title: 'Main',
     items: [
-      { href: '/', label: 'Home' },
-      { href: '/blog', label: 'All Posts' },
-      { href: '/about', label: 'About' }
+      { href: '/', label: 'Home' }
     ]
   },
   {
@@ -63,7 +61,6 @@ const navigationItems = [
     <div class={styles.nav}>
       {navigationItems.map((section) => (
         <div>
-          <div class={styles.categoryTitle}>{section.title}</div>
           {section.items.map((item) => (
             <div class={styles.navItem}>
               <a 

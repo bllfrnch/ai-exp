@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://bllfrnch.github.io',
-	base: '/ai-exp', // Required for GitHub Pages project sites
+	base: process.env.NODE_ENV === 'production' ? '/ai-exp' : '/', // Only use base path in production
 	output: 'static',
 	outDir: './dist',
 	integrations: [mdx(), sitemap()],

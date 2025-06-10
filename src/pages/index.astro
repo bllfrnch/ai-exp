@@ -22,7 +22,7 @@ const posts = (await getCollection('blog'))
 			<h2 class="section-title">Recent Posts</h2>
 			<div class="posts-grid">
 				{posts.map((post) => (
-					<BlogCard post={post} />
+					<BlogCard post={post} showCategories={true} />
 				))}
 			</div>
 			

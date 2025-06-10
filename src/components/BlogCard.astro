@@ -5,14 +5,28 @@ import styles from './BlogCard.module.css';
 
 interface Props {
   post: CollectionEntry<'blog'>;
+  showCategories?: boolean;
 }
 
-const { post } = Astro.props;
+const { post, showCategories = false } = Astro.props;
+
+// Generate slug from post.id (filename without extension)
+const slug = post.slug || post.id.replace('.md', '').replace('.mdx', '');
 ---
 
 <article class={styles.card}>
+  {showCategories && post.data.categories && post.data.categories.length > 0 && (
+    <div class={styles.categories}>
+      {post.data.categories.map((category) => (
+        <a href={`/blog/category/${category}`} class={styles.category}>
+          {category.replace('-', ' ')}
+        </a>
+      ))}
+    </div>
+  )}
+  
   <h2>
-    <a href={`/blog/${post.slug}/`} class={styles.title}>
+    <a href={`/blog/${slug}/`} class={styles.title}>
       {post.data.title}
     </a>
   </h2>
@@ -25,7 +39,7 @@ const { post } = Astro.props;
   
   <div class={styles.meta}>
     <FormattedDate date={post.data.pubDate} />
-    <a href={`/blog/${post.slug}/`} class={styles.readMore}>
+    <a href={`/blog/${slug}/`} class={styles.readMore}>
       Read more →
     </a>
   </div>
