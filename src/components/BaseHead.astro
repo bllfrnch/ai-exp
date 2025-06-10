@@ -23,23 +23,11 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href={`${baseUrl}favicon.svg`} />
 
-<!-- Inject font faces with correct base URL -->
-<style set:html={`
-@font-face {
-	font-family: 'Atkinson';
-	src: url('${baseUrl}fonts/atkinson-regular.woff') format('woff');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Atkinson';
-	src: url('${baseUrl}fonts/atkinson-bold.woff') format('woff');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-`}></style>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <link rel="sitemap" href={`${baseUrl}sitemap-index.xml`} />
 <link
 	rel="alternate"
@@ -48,10 +36,6 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-
-<!-- Font preloads -->
-<link rel="preload" href={`${baseUrl}fonts/atkinson-regular.woff`} as="font" type="font/woff" crossorigin />
-<link rel="preload" href={`${baseUrl}fonts/atkinson-bold.woff`} as="font" type="font/woff" crossorigin />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

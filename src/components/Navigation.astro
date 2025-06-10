@@ -1,0 +1,131 @@
+---
+import { SITE_TITLE } from '../consts';
+import styles from './Navigation.module.css';
+
+interface Props {
+  children: any;
+}
+
+const { children } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+// Example navigation structure - you can customize this
+const navigationItems = [
+  {
+    title: 'Main',
+    items: [
+      { href: '/', label: 'Home' },
+      { href: '/blog', label: 'All Posts' },
+      { href: '/about', label: 'About' }
+    ]
+  },
+  {
+    title: 'Development',
+    items: [
+      { href: '/blog/category/web-development', label: 'Web Development' },
+      { href: '/blog/category/javascript', label: 'JavaScript' },
+      { href: '/blog/category/css', label: 'CSS & Styling' }
+    ],
+    subItems: [
+      { href: '/blog/category/react', label: 'React' },
+      { href: '/blog/category/astro', label: 'Astro' },
+      { href: '/blog/category/vite', label: 'Vite' }
+    ]
+  },
+  {
+    title: 'Tutorials',
+    items: [
+      { href: '/blog/category/tutorials', label: 'All Tutorials' },
+      { href: '/blog/category/beginners', label: 'Beginner Guides' },
+      { href: '/blog/category/advanced', label: 'Advanced Topics' }
+    ]
+  }
+];
+---
+
+<div class={styles.layout}>
+  <header class={styles.header}>
+    <a href="/" class={styles.logo}>
+      {SITE_TITLE}
+    </a>
+    <button 
+      class={styles.hamburger}
+      id="hamburger"
+      aria-label="Toggle navigation menu"
+    >
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+    </button>
+  </header>
+
+  <nav class={styles.sidebar} id="sidebar">
+    <div class={styles.nav}>
+      {navigationItems.map((section) => (
+        <div>
+          <div class={styles.categoryTitle}>{section.title}</div>
+          {section.items.map((item) => (
+            <div class={styles.navItem}>
+              <a 
+                href={item.href}
+                class={`${styles.navLink} ${currentPath === item.href ? styles.active : ''}`}
+              >
+                {item.label}
+              </a>
+            </div>
+          ))}
+          {section.subItems && (
+            <div class={styles.subNav}>
+              {section.subItems.map((subItem) => (
+                <div class={styles.subNavItem}>
+                  <a 
+                    href={subItem.href}
+                    class={`${styles.subNavLink} ${currentPath === subItem.href ? styles.active : ''}`}
+                  >
+                    {subItem.label}
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </nav>
+
+  <main class={styles.content}>
+    <slot />
+  </main>
+</div>
+
+<script>
+  // Handle hamburger menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  
+  if (hamburger && sidebar) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      sidebar.classList.toggle('open');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024) {
+        const target = e.target as HTMLElement;
+        if (!sidebar.contains(target) && !hamburger.contains(target)) {
+          hamburger.classList.remove('active');
+          sidebar.classList.remove('open');
+        }
+      }
+    });
+
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024) {
+        hamburger.classList.remove('active');
+        sidebar.classList.remove('open');
+      }
+    });
+  }
+</script> 
