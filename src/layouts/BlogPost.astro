@@ -1,21 +1,21 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
+import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { Image } from 'astro:assets';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, categories } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
-			main {
+			.blog-post-content {
 				width: calc(100% - 2em);
 				max-width: 100%;
 				margin: 0;
@@ -52,35 +52,76 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.last-updated-on {
 				font-style: italic;
 			}
+			.categories {
+				display: flex;
+				justify-content: center;
+				gap: 0.75rem;
+				margin: 1rem 0;
+				flex-wrap: wrap;
+			}
+			.category-link {
+				background: var(--accent);
+				color: white;
+				padding: 0.5rem 1rem;
+				border-radius: 8px;
+				text-decoration: none;
+				font-size: 0.875rem;
+				font-weight: 600;
+				transition: all 0.2s ease;
+				text-transform: capitalize;
+				border: 2px solid var(--accent);
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				display: inline-block;
+			}
+			.category-link:hover {
+				background: var(--accent-dark);
+				border-color: var(--accent-dark);
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			}
+			.category-link:active {
+				transform: translateY(0);
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
 		</style>
 	</head>
 
 	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+		<Navigation>
+			<main class="blog-post-content">
+				<article>
+					<div class="hero-image">
+						{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
 					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
+					<div class="prose">
+						<div class="title">
+							<div class="date">
+								<FormattedDate date={pubDate} />
+								{
+									updatedDate && (
+										<div class="last-updated-on">
+											Last updated on <FormattedDate date={updatedDate} />
+										</div>
+									)
+								}
+							</div>
+							<h1>{title}</h1>
+							{categories && categories.length > 0 && (
+								<div class="categories">
+									{categories.map((category) => (
+										<a href={`/blog/category/${category}`} class="category-link">
+											{category.replace('-', ' ')}
+										</a>
+									))}
+								</div>
+							)}
+							<hr />
+						</div>
+						<slot />
+					</div>
+				</article>
+			</main>
+			<Footer />
+		</Navigation>
 	</body>
 </html>
